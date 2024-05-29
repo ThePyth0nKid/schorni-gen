@@ -24,7 +24,7 @@ const generateBescheid = async (formData) => {
   const prompt = `Feuerungsanlage: ${formData.feuerungsanlage}, Mangel: ${formData.mangel}, Schwere: ${formData.schwere}, Frist: ${formData.frist}`;
   try {
     const response = await axios.post('https://api.openai.com/v1/completions', {
-      model: 'text-davinci-003',
+      model: 'ft:davinci-002:personal::9TYZFrIi',
       prompt: prompt,
       max_tokens: 100,
       temperature: 0.5
