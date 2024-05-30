@@ -1,2 +1,1 @@
-web: npm start
-
+web: npm install --prefix backend && node backend/src/server.js
