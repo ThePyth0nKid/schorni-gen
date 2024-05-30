@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
@@ -33,6 +33,18 @@ const Container = styled.div`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+`;
+
+const Fieldset = styled.fieldset`
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
+const Legend = styled.legend`
+  padding: 0 10px;
+  font-weight: bold;
 `;
 
 const Select = styled.select`
@@ -100,12 +112,32 @@ const App = () => {
     schwere: '',
     frist: '',
     bemerkungen: '',
-    aufstellort: ''
+    aufstellort: '',
+    name: '',
+    behörde: '',
+    behördenstrasse: '',
+    behördenPLZ: '',
+    datum: '',
+    telefon: '',
+    fax: '',
+    bürgerstrasse: '',
+    bürgerPLZ: '',
+    gebäudeteil: '',
+    verzeichnisNr: '',
+    liegenschaftsNr: ''
   });
   const [response, setResponse] = useState('');
   const [feedback, setFeedback] = useState('');
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [showDownloadButton, setShowDownloadButton] = useState(false);
+
+  useEffect(() => {
+    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+    setFormData((prevData) => ({
+      ...prevData,
+      datum: currentDate
+    }));
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -161,6 +193,25 @@ const App = () => {
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
+        <Fieldset>
+          <Legend>Bescheid Kopf</Legend>
+          <Input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" />
+          <Input type="text" name="behörde" value={formData.behörde} onChange={handleChange} placeholder="Behörde" />
+          <Input type="text" name="behördenstrasse" value={formData.behördenstrasse} onChange={handleChange} placeholder="Straße" />
+          <Input type="text" name="behördenPLZ" value={formData.behördenPLZ} onChange={handleChange} placeholder="PLZ" />
+          <Input type="text" name="telefon" value={formData.telefon} onChange={handleChange} placeholder="Telefon" />
+          <Input type="text" name="fax" value={formData.fax} onChange={handleChange} placeholder="Fax" />
+          <Input type="text" name="datum" value={formData.datum} onChange={handleChange} placeholder="Datum" disabled />
+        </Fieldset>
+        <Fieldset>
+          <Legend>Im Gebäude</Legend>
+          <Input type="text" name="bürgerstrasse" value={formData.bürgerstrasse} onChange={handleChange} placeholder="Straße" />
+          <Input type="text" name="bürgerPLZ" value={formData.bürgerPLZ} onChange={handleChange} placeholder="PLZ" />
+          <Input type="text" name="gebäudeteil" value={formData.gebäudeteil} onChange={handleChange} placeholder="Gebäudeteil" />
+          <Input type="text" name="verzeichnisNr" value={formData.verzeichnisNr} onChange={handleChange} placeholder="Verzeichnis-Nr" />
+          <Input type="text" name="liegenschaftsNr" value={formData.liegenschaftsNr} onChange={handleChange} placeholder="Liegenschafts-Nr" />
+          <Input type="text" name="datum" value={formData.datum} onChange={handleChange} placeholder="Datum" disabled />
+        </Fieldset>
         <Select name="feuerungsanlage" value={formData.feuerungsanlage} onChange={handleChange}>
           <option value="">Wählen Sie eine Feuerungsanlage</option>
           {feuerungsanlageOptions.map((option) => (
