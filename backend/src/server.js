@@ -3,6 +3,7 @@ const cors = require('cors');
 const axios = require('axios');
 const dotenv = require('dotenv');
 const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
+const path = require('path');
 
 dotenv.config();
 
@@ -17,6 +18,13 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 if (!OPENAI_API_KEY) {
   throw new Error('OpenAI API-Key ist nicht definiert. Bitte setzen Sie die Umgebungsvariable OPENAI_API_KEY.');
 }
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../../frontend/build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'));
+});
 
 // Funktion zur Generierung des Mangeltexts mit der OpenAI API (GPT-3.5 Turbo)
 const generateMangelText = async (formData) => {
