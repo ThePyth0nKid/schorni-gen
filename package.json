@@ -2,8 +2,8 @@
     "name": "schorni-gen",
     "version": "1.0.0",
     "scripts": {
-      "start": "npm install --prefix backend && node backend/src/server.js",
-      "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
+      "start": "node backend/src/server.js",
+      "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend && npm install --prefix backend"
     },
     "engines": {
       "node": "14.x"
