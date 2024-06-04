@@ -4,6 +4,7 @@ const axios = require('axios');
 const dotenv = require('dotenv');
 const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
 const path = require('path');
+const fs = require('fs');
 
 dotenv.config();
 
@@ -59,8 +60,13 @@ const generateMangelText = async (formData) => {
 
 // Funktion zum Erstellen eines neuen PDFs mit generiertem Mangeltext und Formulardaten
 const createPdf = async (formData, generatedText) => {
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([595.28, 841.89]); // A4 size in points
+  // Pfad zur PDF-Vorlage
+  const pdfPath = path.join(__dirname, 'bescheid-form.pdf');
+  const existingPdfBytes = fs.readFileSync(pdfPath);
+
+  const pdfDoc = await PDFDocument.load(existingPdfBytes);
+  const pages = pdfDoc.getPages();
+  const page = pages[0]; // Annahme: Nur eine Seite wird verwendet
 
   const { width, height } = page.getSize();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -80,7 +86,7 @@ const createPdf = async (formData, generatedText) => {
 
   page.drawText(formData.behörde, {
     x: 50,
-    y: height - 63,
+    y: height - 64,
     size: fontSizeAdresse,
     font: font,
     color: rgb(0, 0, 0),
@@ -88,7 +94,7 @@ const createPdf = async (formData, generatedText) => {
 
   page.drawText(formData.behördenstrasse, {
     x: 50,
-    y: height - 75,
+    y: height - 78,
     size: fontSizeAdresse,
     font: font,
     color: rgb(0, 0, 0),
@@ -96,7 +102,7 @@ const createPdf = async (formData, generatedText) => {
 
   page.drawText(formData.behördenPLZ, {
     x: 50,
-    y: height - 87,
+    y: height - 92,
     size: fontSizeAdresse,
     font: font,
     color: rgb(0, 0, 0),
@@ -119,24 +125,24 @@ const createPdf = async (formData, generatedText) => {
   });
 
   page.drawText(`Im Gebäude:`, {
-    x: 350,
-    y: height - 50,
+    x: 343,
+    y: height - 42,
     size: fontSizeImGebäude,
     font: font,
     color: rgb(0, 0, 0),
   });
 
   page.drawText(formData.bürgerstrasse, {
-    x: 350,
-    y: height - 70,
+    x: 343,
+    y: height - 59,
     size: fontSizeImGebäude,
     font: font,
     color: rgb(0, 0, 0),
   });
 
   page.drawText(formData.bürgerPLZ, {
-    x: 350,
-    y: height - 81,
+    x: 343,
+    y: height - 70,
     size: fontSizeImGebäude,
     font: font,
     color: rgb(0, 0, 0),
@@ -144,8 +150,8 @@ const createPdf = async (formData, generatedText) => {
 
     // Zeichne den Label-Text "Gebäudeteil:"
   page.drawText('Gebäudeteil:', {
-    x: 350,
-    y: height - 110,
+    x: 343,
+    y: height - 87,
     size: fontSizeImGebäude,
     font: font,
     color: rgb(0, 0, 0),
@@ -153,8 +159,8 @@ const createPdf = async (formData, generatedText) => {
 
   // Zeichne die Benutzereingabe unter dem Label-Text
   page.drawText(`${formData.gebäudeteil}`, {
-    x: 350,
-    y: height - 121, // Passe die Y-Koordinate an, um den Text darunter zu platzieren
+    x: 343,
+    y: height - 98, // Passe die Y-Koordinate an, um den Text darunter zu platzieren
     size: fontSizeImGebäude,
     font: font,
     color: rgb(0, 0, 0),
@@ -162,7 +168,7 @@ const createPdf = async (formData, generatedText) => {
 
 
   page.drawText(`Datum: ${formData.datum}`, {
-    x: 350,
+    x: 344,
     y: height - 130,
     size: fontSizeImGebäude,
     font: font,
@@ -170,7 +176,7 @@ const createPdf = async (formData, generatedText) => {
   });
 
   page.drawText(`Verzeichnis-Nr.: ${formData.verzeichnisNr}`, {
-    x: 350,
+    x: 344,
     y: height - 150,
     size: fontSizeImGebäude,
     font: font,
@@ -178,7 +184,7 @@ const createPdf = async (formData, generatedText) => {
   });
 
   page.drawText(`Liegenschafts-Nr.: ${formData.liegenschaftsNr}`, {
-    x: 350,
+    x: 344,
     y: height - 170,
     size: fontSizeImGebäude,
     font: font,
@@ -187,7 +193,7 @@ const createPdf = async (formData, generatedText) => {
 
   page.drawText(`Mängelfeststellung`, {
     x: 50,
-    y: height - 300,
+    y: height - 258,
     size: fontSize,
     font: font,
     color: rgb(0, 0, 0),
@@ -195,7 +201,7 @@ const createPdf = async (formData, generatedText) => {
 
   page.drawText(`- Mitteilung an den Eigentümer - entsprechend § 5 Schornsteinfeger-Handwerksgesetz`, {
     x: 50,
-    y: height - 320,
+    y: height - 274,
     size: fontSize,
     font: font,
     color: rgb(0, 0, 0),
@@ -203,7 +209,7 @@ const createPdf = async (formData, generatedText) => {
 
   page.drawText(`Im o.g. Gebäude wurden folgende Mängel vorgefunden:`, {
     x: 50,
-    y: height - 340,
+    y: height - 300,
     size: fontSize,
     font: font,
     color: rgb(0, 0, 0),
@@ -212,7 +218,7 @@ const createPdf = async (formData, generatedText) => {
   // Generierter Mangeltext einfügen
   page.drawText(generatedText, {
     x: 50,
-    y: height - 360,
+    y: height - 320,
     size: fontSize,
     font: font,
     color: rgb(0, 0, 0),
